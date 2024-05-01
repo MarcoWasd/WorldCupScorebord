@@ -15,7 +15,7 @@ public class Scoreboard implements IScoreboard{
     }
 
     @Override
-    public void updateScore(int homeScore, int awayScore) {
+    public void updateScore(String homeTeam, int homeScore, int awayScore) {
 
     }
 
@@ -26,6 +26,6 @@ public class Scoreboard implements IScoreboard{
 
     @Override
     public List<Match> getSummaryByTotalScore() {
-        return null;
+        return board.values().stream().toList();
     }
 }

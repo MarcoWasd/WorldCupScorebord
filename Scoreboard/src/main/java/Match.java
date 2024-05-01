@@ -49,4 +49,22 @@ public class Match {
     public String toString() {
         return homeTeam + " " + homeScore + " - " + awayTeam + " " + awayScore;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        final Match other = (Match) obj;
+        if(this.homeTeam == other.homeTeam && this.awayTeam == other.awayTeam) {
+            return true;
+        }
+
+        return false;
+    }
 }

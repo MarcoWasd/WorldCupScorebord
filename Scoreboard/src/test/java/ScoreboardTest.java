@@ -25,12 +25,15 @@ public class ScoreboardTest  {
     }
 
     @Test(dataProvider = "matchList1")
-    public void startNewMatchTest(String homeTeam, String awayTeam, boolean fail){
-        if(fail) {
+    public void startNewMatchTest(String homeTeam, String awayTeam, boolean hasToFail){
+        if(hasToFail) {
             assertThrows(InvalidInputException.class, () -> board.startMatch(homeTeam, awayTeam), "Invalid input is:" + homeTeam + " " + awayTeam);
+            assert(!board.getSummaryByTotalScore().contains(new Match(homeTeam, awayTeam)));
         } else {
             assertDoesNotThrow(() -> board.startMatch(homeTeam, awayTeam));
+            assert(board.getSummaryByTotalScore().contains(new Match(homeTeam, awayTeam)));
         }
-
     }
+
+
 }
