@@ -19,10 +19,10 @@ public class Match {
         return awayScore;
     }
 
-    private String getHomeTeam() {
+    public String getHomeTeam() {
         return homeTeam;
     }
-    private String getAwayTeam() {
+    public String getAwayTeam() {
         return awayTeam;
     }
     public void setHomeTeam(String homeTeam) {

@@ -48,8 +48,34 @@ public class ScoreboardTest  {
     }
 
     @Test(dataProvider = "matchList2")
-    public void updateScoreTest (String homeTeam, String awayTeam, int homeScore, int awayScore, boolean hasToFail) {
-        assert(true);
+    public void updateScoreTest (String homeTeam, String awayTeam, int homeScore, int awayScore, boolean hasToFail) throws InvalidInputException {
+        try {
+            board.startMatch(homeTeam, awayTeam);
+        } catch (Exception e) {
+            //I ignore this exception because I am not testing startMatch here
+            System.out.println("aaa "+ homeTeam);
+        }
+        Match matchToUpdate = findMatch(homeTeam);
+        if(hasToFail) {
+            assertThrows(InvalidInputException.class, () -> board.updateScore(homeTeam, homeScore, awayScore));
+            if(matchToUpdate != null) {
+                Match updatedMatch = findMatch(homeTeam);
+                assert(updatedMatch.getHomeScore() == matchToUpdate.getHomeScore());
+                assert(updatedMatch.getAwayScore() == matchToUpdate.getAwayScore());
+            }
+        } else {
+            assertDoesNotThrow(() -> board.updateScore(homeTeam, homeScore, awayScore));
+            Match updatedMatch = findMatch(homeTeam);
+            assert(updatedMatch.getHomeScore() == homeScore);
+            assert(updatedMatch.getAwayScore() == awayScore);
+        }
+    }
+
+    private Match findMatch(String homeTeam) {
+        for(Match match: board.getSummaryByTotalScore()) {
+            if(match.getHomeTeam() == homeTeam) return match;
+        }
+        return null;
     }
 
 
