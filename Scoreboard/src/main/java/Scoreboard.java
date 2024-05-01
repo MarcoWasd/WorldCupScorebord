@@ -29,7 +29,17 @@ public class Scoreboard implements IScoreboard{
 
     @Override
     public void finishMatch(String homeTeam) throws InvalidInputException {
+        if(!inputCheckFinishMatch(homeTeam)) throw new InvalidInputException(homeTeam, "awayTeam");
+        teamsCurrentlyPlaying.remove(homeTeam);
+        teamsCurrentlyPlaying.remove(board.get(homeTeam).getAwayTeam());
+        board.remove(homeTeam);
+    }
 
+    private boolean inputCheckFinishMatch(String homeTeam) {
+        if(inputCheckOnTeam(homeTeam) && teamsCurrentlyPlaying.contains(homeTeam))
+            return true;
+        else
+            return false;
     }
 
     @Override

@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ScoreboardTest  {
 
     private final Set<String> teamsList = Set.of("Italy" , "Japan", "Norway", "France", "Spain", "Ireland");
-    private Scoreboard board = new Scoreboard(teamsList);
+    private final Scoreboard board = new Scoreboard(teamsList);
 
 
     @DataProvider(name = "matchList1")
@@ -47,17 +47,18 @@ public class ScoreboardTest  {
                 {"France", "Ireland", -2, 5, true},
                 {"Italy", "Norway", 5, 0, true}, // this has to fail because scores can't decrease
                 {"Italy", "Norway", -1, 0, true},
-                {"notinList", "Norway", 11, 0, true}
+                {"notinList", "Norway", 11, 0, true} ,
+                {null, null, 0, 0, true},
+                {null, null, 0, -11, true}
         };
     }
 
     @Test(dataProvider = "matchList2")
-    public void updateScoreTest (String homeTeam, String awayTeam, int homeScore, int awayScore, boolean hasToFail) throws InvalidInputException {
+    public void updateScoreTest (String homeTeam, String awayTeam, int homeScore, int awayScore, boolean hasToFail) {
         try {
             board.startMatch(homeTeam, awayTeam);
         } catch (Exception e) {
             //I ignore this exception because I am not testing startMatch here
-            System.out.println("aaa "+ homeTeam);
         }
         Match matchToUpdate = findMatch(homeTeam);
         if(hasToFail) {
@@ -75,9 +76,45 @@ public class ScoreboardTest  {
         }
     }
 
+
+    @DataProvider(name = "matchList3")
+    public static Object[][] matchListFinishMatch() {
+        return new Object[][] {
+                {"Italy", "Norway", false, true},
+                {"Japan", "Spain", false, true},
+                {"S", "J", true, true},
+                {"Frnce", "Ired", true, true},
+                {"Italy", "Norway", true, false},
+                {"Frnce", "Ired", true, false},
+                {null, "Ired", true, true},
+                {null, null, true, true},
+                {null, null, true, false}
+        };
+    }
+
+    @Test(dataProvider = "matchList3")
+    public void finishMatchTest (String homeTeam, String awayTeam, boolean hasToFail, boolean hasToStart) {
+        if(hasToStart) {
+            try {
+                board.startMatch(homeTeam, awayTeam);
+            } catch (Exception e) {
+                //I ignore this exception because I am not testing startMatch here
+            }
+        }
+
+        if(hasToFail) {
+            assertThrows(InvalidInputException.class, () -> board.finishMatch(homeTeam));
+            assert(findMatch(homeTeam) == null);
+        } else {
+            assertDoesNotThrow(() -> board.finishMatch(homeTeam));
+            assert(findMatch(homeTeam) == null);
+        }
+
+    }
+
     private Match findMatch(String homeTeam) {
         for(Match match: board.getSummaryByTotalScore()) {
-            if(match.getHomeTeam() == homeTeam) return match;
+           if(match.getHomeTeam() == homeTeam) return match;
         }
         return null;
     }
