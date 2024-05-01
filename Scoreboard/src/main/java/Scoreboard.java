@@ -11,7 +11,7 @@ public class Scoreboard implements IScoreboard{
         teamsCurrentlyPlaying = new HashSet<>();
     }
     @Override
-    public void startMatch(String homeTeam, String awayTeam) throws InvalidInputException {
+    public synchronized void startMatch(String homeTeam, String awayTeam) throws InvalidInputException {
         if(!inputCheckStartMatch(homeTeam, awayTeam)) throw new InvalidInputException(homeTeam, awayTeam);
         teamsCurrentlyPlaying.add(homeTeam);
         teamsCurrentlyPlaying.add(awayTeam);
@@ -19,7 +19,7 @@ public class Scoreboard implements IScoreboard{
     }
 
     @Override
-    public void updateScore(String homeTeam, int newHomeScore, int newAwayScore) throws InvalidInputException {
+    public synchronized void updateScore(String homeTeam, int newHomeScore, int newAwayScore) throws InvalidInputException {
         if(!inputCheckUpdateScore(homeTeam, newHomeScore, newAwayScore)) throw new InvalidInputException(homeTeam, "awayTeam");
         Match matchToUpdate = board.get(homeTeam);
         matchToUpdate.setHomeScore(newHomeScore);
@@ -28,22 +28,15 @@ public class Scoreboard implements IScoreboard{
 
 
     @Override
-    public void finishMatch(String homeTeam) throws InvalidInputException {
+    public synchronized void finishMatch(String homeTeam) throws InvalidInputException {
         if(!inputCheckFinishMatch(homeTeam)) throw new InvalidInputException(homeTeam, "awayTeam");
         teamsCurrentlyPlaying.remove(homeTeam);
         teamsCurrentlyPlaying.remove(board.get(homeTeam).getAwayTeam());
         board.remove(homeTeam);
     }
 
-    private boolean inputCheckFinishMatch(String homeTeam) {
-        if(inputCheckOnTeam(homeTeam) && teamsCurrentlyPlaying.contains(homeTeam))
-            return true;
-        else
-            return false;
-    }
-
     @Override
-    public List<Match> getSummaryByTotalScore() {
+    public synchronized List<Match> getSummaryByTotalScore() {
         List<Match> boardSorted = new ArrayList<>(board.values().stream().toList());
         Collections.sort(boardSorted, new SortByTotalScoreComparator());
         return boardSorted;
@@ -57,7 +50,7 @@ public class Scoreboard implements IScoreboard{
                 return m2.getTotalScore() - m1.getTotalScore();
             }
             return m1.getTimestamp().compareTo(m2.getTimestamp());
-        };
+        }
     }
 
     private boolean inputCheckStartMatch(String homeTeam, String awayTeam) {
@@ -84,6 +77,13 @@ public class Scoreboard implements IScoreboard{
 
     private boolean inputCheckUpdateScore(String homeTeam, int homeScore, int awayScore) {
         if(inputCheckOnTeam(homeTeam) && teamsList.contains(homeTeam) && board.containsKey(homeTeam) && inputCheckOnScores(homeTeam, homeScore, awayScore))
+            return true;
+        else
+            return false;
+    }
+
+    private boolean inputCheckFinishMatch(String homeTeam) {
+        if(inputCheckOnTeam(homeTeam) && teamsCurrentlyPlaying.contains(homeTeam))
             return true;
         else
             return false;
