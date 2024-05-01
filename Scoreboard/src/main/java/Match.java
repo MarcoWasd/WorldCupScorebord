@@ -1,15 +1,28 @@
+import java.security.Timestamp;
+import java.util.Date;
+
 public class Match {
 
-    private String homeTeam;
-    private String awayTeam;
+    private final String homeTeam;
+    private final String awayTeam;
     private int homeScore;
     private int awayScore;
+    private final Date timestamp;
 
     public Match(String homeTeam, String awayTeam) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         homeScore = 0;
         awayScore = 0;
+        timestamp = new Date();
+    }
+
+    public Match(String homeTeam, String awayTeam, int homeScore, int awayScore) {
+        this.homeTeam = homeTeam;
+        this.awayTeam = awayTeam;
+        this.homeScore = homeScore;
+        this.awayScore = awayScore;
+        timestamp = new Date();
     }
     public int getHomeScore() {
         return homeScore;
@@ -25,18 +38,10 @@ public class Match {
     public String getAwayTeam() {
         return awayTeam;
     }
-    public void setHomeTeam(String homeTeam) {
-        this.homeTeam = homeTeam;
-    }
 
-    public void setAwayTeam(String awayTeam) {
-        this.awayTeam = awayTeam;
-    }
+    public Date getTimestamp() { return timestamp;}
 
-    public void setHomeScore(int homeScore) {
-        this.homeScore = homeScore;
-    }
-
+    public void setHomeScore(int homeScore) { this.homeScore = homeScore;}
     public void setAwayScore(int awayScore) {
         this.awayScore = awayScore;
     }

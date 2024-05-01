@@ -2,6 +2,8 @@
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -112,6 +114,61 @@ public class ScoreboardTest  {
 
     }
 
+    @DataProvider(name = "matchList4")
+    public static Object[][] matchListGetSummaryByTotalScore() {
+        return new Object[][] {
+                {returnList1(), returnList2()},
+                {returnList3(), returnList4()}
+
+        };
+    }
+
+    @Test(dataProvider = "matchList4")
+    public void getSummaryByTotalScoreTest (List<Match> listInput, List<Match> listOutput) {
+
+        for(Match match: listInput) {
+            try {
+                board.startMatch(match.getHomeTeam(), match.getAwayTeam());
+                board.updateScore(match.getHomeTeam(), match.getHomeScore(), match.getAwayScore());
+                Thread.sleep(1); // this is needed to give each match a different start time
+            } catch (Exception e) {
+                //I ignore this exception because I am not testing startMatch here
+            }
+        }
+        List<Match> sortedList = board.getSummaryByTotalScore();
+        assert(sortedList.equals(listOutput));
+
+        for(Match match: listInput) {
+            try {
+                board.finishMatch(match.getHomeTeam());
+            } catch (Exception e) {
+                //I ignore this exception because I am not testing startMatch here
+            }
+        }
+    }
+
+    private static List<Match> returnList1() {
+        return Arrays.asList(new Match("Italy", "Norway", 5, 0),
+                new Match("Spain", "Japan", 0, 5),
+                new Match("France", "Ireland", 10, 10));
+    }
+    private static List<Match> returnList2() {
+        return Arrays.asList(new Match("France", "Ireland", 10, 10),
+        new Match("Italy", "Norway", 5, 0),
+        new Match("Spain", "Japan", 0, 5));
+    }
+
+    private static List<Match> returnList3() {
+        return Arrays.asList(new Match("Italy", "Norway", 0, 0),
+                new Match("Spain", "Japan", 0, 0),
+                new Match("France", "Ireland", 0, 0));
+    }
+
+    private static List<Match> returnList4() {
+        return Arrays.asList(new Match("Italy", "Norway", 0, 0),
+                new Match("Spain", "Japan", 0, 0),
+                new Match("France", "Ireland", 0, 0));
+    }
     private Match findMatch(String homeTeam) {
         for(Match match: board.getSummaryByTotalScore()) {
            if(match.getHomeTeam() == homeTeam) return match;

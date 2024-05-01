@@ -44,7 +44,20 @@ public class Scoreboard implements IScoreboard{
 
     @Override
     public List<Match> getSummaryByTotalScore() {
-        return board.values().stream().toList();
+        List<Match> boardSorted = new ArrayList<>(board.values().stream().toList());
+        Collections.sort(boardSorted, new SortByTotalScoreComparator());
+        return boardSorted;
+    }
+
+    private class SortByTotalScoreComparator implements Comparator<Match> {
+
+        @Override
+        public int compare(Match m1, Match m2) {
+            if(m1.getTotalScore() != m2.getTotalScore()) {
+                return m2.getTotalScore() - m1.getTotalScore();
+            }
+            return m1.getTimestamp().compareTo(m2.getTimestamp());
+        };
     }
 
     private boolean inputCheckStartMatch(String homeTeam, String awayTeam) {
