@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ScoreboardTest  {
 
-    private final Set<String> teamsList = Set.of("Italy" , "Japan", "Norway", "France", "Spain");
+    private final Set<String> teamsList = Set.of("Italy" , "Japan", "Norway", "France", "Spain", "Ireland");
     private Scoreboard board = new Scoreboard(teamsList);
 
 
@@ -44,6 +44,7 @@ public class ScoreboardTest  {
                 {"Italy", "Norway", 6, 0, false},
                 {"Japan", "Spain", 2, 5, false},
                 {"Spain", "Japan", 2, 5, true},
+                {"France", "Ireland", -2, 5, true},
                 {"Italy", "Norway", 5, 0, true}, // this has to fail because scores can't decrease
                 {"Italy", "Norway", -1, 0, true},
                 {"notinList", "Norway", 11, 0, true}
