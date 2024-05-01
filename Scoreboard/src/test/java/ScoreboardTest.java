@@ -43,7 +43,10 @@ public class ScoreboardTest  {
         return new Object[][] {
                 {"Italy", "Norway", 6, 0, false},
                 {"Japan", "Spain", 2, 5, false},
+                {"Spain", "Japan", 2, 5, true},
                 {"Italy", "Norway", 5, 0, true}, // this has to fail because scores can't decrease
+                {"Italy", "Norway", -1, 0, true},
+                {"notinList", "Norway", 11, 0, true}
         };
     }
 

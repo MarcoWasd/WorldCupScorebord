@@ -20,7 +20,7 @@ public class Scoreboard implements IScoreboard{
 
     @Override
     public void updateScore(String homeTeam, int newHomeScore, int newAwayScore) throws InvalidInputException {
-        if(!inputCheckUpdateScore(homeTeam, newHomeScore, newAwayScore)) throw new InvalidInputException(homeTeam, board.get(homeTeam).getAwayTeam());
+        if(!inputCheckUpdateScore(homeTeam, newHomeScore, newAwayScore)) throw new InvalidInputException(homeTeam, "awayTeam");
         Match matchToUpdate = board.get(homeTeam);
         matchToUpdate.setHomeScore(newHomeScore);
         matchToUpdate.setAwayScore(newAwayScore);
@@ -60,7 +60,7 @@ public class Scoreboard implements IScoreboard{
     }
 
     private boolean inputCheckUpdateScore(String homeTeam, int homeScore, int awayScore) {
-        if(inputCheckOnTeam(homeTeam) && board.containsKey(homeTeam) && inputCheckOnScores(homeTeam, homeScore, awayScore))
+        if(inputCheckOnTeam(homeTeam) && teamsList.contains(homeTeam) && board.containsKey(homeTeam) && inputCheckOnScores(homeTeam, homeScore, awayScore))
             return true;
         else
             return false;
